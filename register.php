@@ -1,10 +1,9 @@
 <?php
 $servername = "localhost";
-$username = "root"; // Cambia esto si tu usuario de MySQL es diferente
-$password = ""; // Cambia esto si tu contraseña de MySQL es diferente
+$username = "root";
+$password = ""; 
 $dbname = "users_db";
 
-// Crear conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verificar conexión 
@@ -13,19 +12,26 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user = $_POST['username'];
-    $nombre_aspirante = $_POST['nombre_aspirante'];
-    $especialidad = $_POST['especialidad'];
-    $curp = $_POST['curp'];
-    $escuela = $_POST['escuela'];
-    $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $user = isset($_POST['username']) ? $_POST['username'] : '';
+    $nombre_aspirante = isset($_POST['nombre_aspirante']) ? $_POST['nombre_aspirante'] : '';
+    $especialidad = isset($_POST['especialidad']) ? $_POST['especialidad'] : '';
+    $curp = isset($_POST['curp']) ? $_POST['curp'] : '';
+    $escuela = isset($_POST['escuela']) ? $_POST['escuela'] : '';
+    $pass = isset($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : '';
 
-    $sql = "INSERT INTO users (username, nombre_aspirante,especialidad,curp,escuela,password) VALUES ('$user','$nombre_aspirante','$especialidad','$curp','$escuela','$pass')";
+    $sql = "INSERT INTO users (username, nombre_aspirante, especialidad, curp, escuela, password) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
 
-    if ($conn->query($sql) === TRUE) {
-        echo "Registro exitoso";
+    if ($stmt) {
+        $stmt->bind_param("ssssss", $user, $nombre_aspirante, $especialidad, $curp, $escuela, $pass);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Registro exitoso');</script>";
+        } else {
+            echo "<script>alert('Error: " . $stmt->error . "');</script>";
+        }
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "<script>alert('Error: " . $conn->error . "');</script>";
     }
 }
 
