@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Calculadora de Interés Compuesto</h2>
+<p>Capital Inicial: <input id="capital" type="number" value="1000"></p>
+<p>Número de Periodos: <input id="periodos" type="number" value="5"></p>
+<button onclick="calcularInteres()">Calcular</button>
+<p id="resultado"></p>
+<script>
+function calcularInteres() {
+  var capitalInicial = parseFloat(document.getElementById("capital").value);
+  var periodos = parseFloat(document.getElementById("periodos").value);
+  var tasaInteres = 0.10;
+  var resultado = document.getElementById("resultado");
+  resultado.innerHTML = "";
+  for (var i = 1; i <= periodos; i++) {
+    var interes = capitalInicial * tasaInteres;
+    var capitalFinal = capitalInicial + interes;
+    capitalInicial = capitalFinal;
+    resultado.innerHTML += "Periodo: " + i + ", Capital: $" + capitalInicial.toFixed(2) + ", Interés: $" + interes.toFixed(2) + ", Capital Final: $" + capitalFinal.toFixed(2) + "<br>";
+  }
+}
+</script>
+</body>
+</html>
